@@ -1,19 +1,17 @@
 import azure.functions as func
-import pymongo
+
 from bson.objectid import ObjectId
+import os
+
+from mongoConnection import MongoConnection
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-
     id = req.params.get('id')
 
     if id:
         try:
-            url = "localhost"  # TODO: Update with appropriate MongoDB connection information
-            client = pymongo.MongoClient(url)
-            database = client['azure']
-            collection = database['advertisements']
-            
+            collection = MongoConnection(collection_name="advertisement").get_collection()
             query = {'_id': ObjectId(id)}
             result = collection.delete_one(query)
             return func.HttpResponse("")

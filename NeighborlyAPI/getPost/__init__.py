@@ -3,6 +3,8 @@ import pymongo
 import json
 from bson.json_util import dumps
 from bson.objectid import ObjectId
+from mongoConnection import MongoConnection
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
@@ -10,12 +12,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     if id:
         try:
-            url = "localhost"  # TODO: Update with appropriate MongoDB connection information
-            client = pymongo.MongoClient(url)
-            database = client['azure']
-            collection = database['posts']
-
-            query = {'_id': ObjectId(id)}
+            collection = MongoConnection(collection_name="post").get_collection()
+            query = {'_id': id}
             result = collection.find_one(query)
             result = dumps(result)
 
